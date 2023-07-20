@@ -247,20 +247,6 @@ files = [
 ]
 
 [[package]]
-name = "feedparser"
-version = "6.0.10"
-description = "Universal feed parser, handles RSS 0.9x, RSS 1.0, RSS 2.0, CDF, Atom 0.3, and Atom 1.0 feeds"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "feedparser-6.0.10-py3-none-any.whl", hash = "sha256:79c257d526d13b944e965f6095700587f27388e50ea16fd245babe4dfae7024f"},
-    {file = "feedparser-6.0.10.tar.gz", hash = "sha256:27da485f4637ce7163cdeab13a80312b93b7d0c1b775bef4a47629a3110bca51"},
-]
-
-[package.dependencies]
-sgmllib3k = "*"
-
-[[package]]
 name = "frozenlist"
 version = "1.4.0"
 description = "A list-like structure which implements collections.abc.MutableSequence"
@@ -577,6 +563,16 @@ test = ["coverage", "flaky", "matplotlib", "mock", "numpy", "pandas", "pylint (>
 yapf = ["yapf"]
 
 [[package]]
+name = "rfeed"
+version = "1.1.1"
+description = "Python RSS 2.0 Generator"
+optional = false
+python-versions = "*"
+files = [
+    {file = "rfeed-1.1.1.tar.gz", hash = "sha256:aa9506f2866b74f5a322d394a14a63c19a6825c2d94755ff19d46dd1e2434819"},
+]
+
+[[package]]
 name = "sanic"
 version = "23.3.0"
 description = "A web server and web framework that's written to go fast. Build fast. Run fast."
@@ -615,16 +611,6 @@ python-versions = "*"
 files = [
     {file = "sanic-routing-22.8.0.tar.gz", hash = "sha256:305729b4e0bf01f074044a2a315ff401fa7eeffb009eec1d2c81d35e1038ddfc"},
     {file = "sanic_routing-22.8.0-py3-none-any.whl", hash = "sha256:9a928ed9e19a36bc019223be90a5da0ab88cdd76b101e032510b6a7073c017e9"},
-]
-
-[[package]]
-name = "sgmllib3k"
-version = "1.0.0"
-description = "Py3k port of sgmllib."
-optional = false
-python-versions = "*"
-files = [
-    {file = "sgmllib3k-1.0.0.tar.gz", hash = "sha256:7868fb1c8bfa764c1ac563d3cf369c381d1325d36124933a726f29fcdaa812e9"},
 ]
 
 [[package]]
@@ -924,4 +910,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "16be1b56227efd1eba6cf60f128009b08398886a8a374d3120548bb23553b18e"
+content-hash = "70fb46f640576a211042336a30954758dbb618fbd6841a365c302a3618261496"

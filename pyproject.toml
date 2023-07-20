@@ -10,8 +10,8 @@ packages = [{include = "tabnews_rss"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 sanic = "^23.3.0"
-feedparser = "^6.0.10"
 aiohttp = "^3.8.5"
+rfeed = "^1.1.1"
 
 [tool.poetry.group.dev.dependencies]
 python-language-server = "^0.36.2"
