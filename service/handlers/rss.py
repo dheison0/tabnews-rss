@@ -4,6 +4,7 @@ import rfeed
 from . import API_BASE, SITE
 from .. import TITLE, DESCRIPTION
 from ..database import db
+from ..utils import cache
 from aiohttp import ClientSession
 from datetime import datetime
 from http import HTTPStatus
@@ -12,9 +13,15 @@ from time import strptime
 from typing import Union
 
 
+is_tabnews_post = lambda data: data['title'] != None
+
+
 async def get_user_posts(user_name: str) -> Union[str, list[dict] | None]:
     session = ClientSession()
-    response = await session.get(f"{API_BASE}/contents/{user_name}")
+    response = await session.get(
+        f"{API_BASE}/contents/{user_name}",
+        params={'per_page': 50}
+    )
     data = await response.json()
     await session.close()
     return user_name, data
@@ -37,26 +44,25 @@ def turn_post_into_feed_item(post: dict) -> rfeed.Item:
     )
 
 
+@cache
 async def rss_feed(_):
     users = db.get_users()
     tasks = [get_user_posts(u.name) for u in users]
     raw_results = await asyncio.gather(*tasks)
     items = []
-    for result in raw_results:
-        if result[1] is None:
-            db.update_user_status(result[0], 'not found')
+    for user, posts in raw_results:
+        if posts is None:
+            db.update_user_status(user, 'not found')
             continue
-        for p in result[1]:
-            if p['title'] == None:
-                continue
-            items.append(turn_post_into_feed_item(p))
+        items += [turn_post_into_feed_item(p) for p in posts if is_tabnews_post(p)]
     feed = rfeed.Feed(
         title=TITLE,
         description=DESCRIPTION,
         link=SITE,
         items=items,
         language='pt_BR',
+        lastBuildDate=datetime.now()
     )
     rss = feed.rss()
-    return text(rss, status=HTTPStatus.OK)
+    return text(rss, content_type="application/xml", status=HTTPStatus.OK)
 
