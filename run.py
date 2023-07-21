@@ -1,12 +1,13 @@
+from os import environ, cpu_count
 from sanic import Sanic
-from service.handlers import register_handlers
-import os
+from service.handlers.register import add_handlers
+
 
 app = Sanic('tabnewsRSS')
-register_handlers(app)
+add_handlers(app)
 
 if __name__ == '__main__':
     app.go_fast(
-        port=int(os.environ.get('PORT', 8080)),
-        workers=os.cpu_count() or 1
+        port=int(environ.get('PORT', 8080)),
+        workers=cpu_count() or 1
     )

@@ -1,10 +1,11 @@
-from sanic.response import json
-from sanic.request import Request
+from . import API_BASE
+from ..database import db
 from aiohttp import ClientSession
 from dataclasses import asdict
 from http import HTTPStatus
-from ..database import db
-from . import API_BASE
+from sanic.request import Request
+from sanic.response import json
+
 
 async def add_user(request: Request):
     username = request.args.get('user')
@@ -23,6 +24,7 @@ async def add_user(request: Request):
         return json({'error': 'user not found'}, status=HTTPStatus.BAD_REQUEST)
     db.add_user(username)
     return json({'message': 'ok'})
+
 
 async def get_users(request: Request):
     users = [asdict(u) for u in db.get_users()]

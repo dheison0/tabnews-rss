@@ -1,14 +1,16 @@
+import asyncio
 import rfeed
-from time import strptime
-from datetime import datetime
-from typing import Union
-from sanic.response import text
-from http import HTTPStatus
-from aiohttp import ClientSession
+
 from . import API_BASE, SITE
 from .. import TITLE, DESCRIPTION
 from ..database import db
-import asyncio
+from aiohttp import ClientSession
+from datetime import datetime
+from http import HTTPStatus
+from sanic.response import text
+from time import strptime
+from typing import Union
+
 
 async def get_user_posts(user_name: str) -> Union[str, list[dict] | None]:
     session = ClientSession()

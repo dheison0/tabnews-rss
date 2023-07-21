@@ -1,5 +1,7 @@
 import sqlite3
+
 from .model import DatabaseConnector, User
+
 
 class LocalDatabase(DatabaseConnector):
     connection: sqlite3.Connection

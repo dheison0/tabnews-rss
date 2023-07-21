@@ -1,10 +1,12 @@
-from typing import Iterable
 from dataclasses import dataclass
+from typing import Iterable
+
 
 @dataclass
 class User:
     name: str
     status: str = "Ok"
+
 
 class DatabaseConnector:
     def __init__(self, uri: str):
