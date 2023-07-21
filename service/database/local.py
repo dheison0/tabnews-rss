@@ -28,13 +28,14 @@ class LocalDatabase(DatabaseConnector):
         users = list(map(lambda u: User(*u), query_result))
         return users
 
-    def add_user(self, user: str):
-        self._execute("INSERT INTO users VALUES (?, ?);", [user, 'Ok'])
+    def add_user(self, user_id: str):
+        user = User(user_id)
+        self._execute("INSERT INTO users VALUES (?, ?);", [user.name, user.status])
 
-    def remove_user(self, user: str):
-        self._execute("DELETE FROM users WHERE name=?;", [user])
+    def remove_user(self, user_id: str):
+        self._execute("DELETE FROM users WHERE name=?;", [user_id])
 
-    def update_user_status(self, user: str, status: str):
-        self._execute("UPDATE users SET status=? WHERE name=?", [status, user])
+    def update_user_status(self, user_id: str, status: str):
+        self._execute("UPDATE users SET status=? WHERE name=?", [status, user_id])
 
 

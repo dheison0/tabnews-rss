@@ -5,7 +5,7 @@ from typing import Iterable
 @dataclass
 class User:
     name: str
-    status: str = "Ok"
+    status: str = "ok"
 
 
 class DatabaseConnector:
