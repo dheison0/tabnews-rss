@@ -20,6 +20,7 @@ async def add_user(request: Request):
         params={'page': 1, 'per_page': 1}
     )
     await session.close()
+    del session
     if response.status != HTTPStatus.OK:
         return json({'error': 'user not found'}, status=HTTPStatus.BAD_REQUEST)
     db.add_user(username)
@@ -29,4 +30,15 @@ async def add_user(request: Request):
 async def get_users(request: Request):
     users = [asdict(u) for u in db.get_users()]
     return json({'message': 'ok', 'users': users})
+
+
+async def remove_user(request: Request):
+    user = request.args.get('user')
+    if not user:
+        return json(
+            {'error': 'query "user" is missing'},
+            status=HTTPStatus.BAD_REQUEST
+        )
+    db.remove_user(user)
+    return json({'message': 'ok'})
 
