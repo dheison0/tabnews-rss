@@ -1,8 +1,7 @@
 import asyncio
 import rfeed
 
-from . import API_BASE, SITE
-from .. import TITLE, DESCRIPTION
+from .. import API_BASE, SITE, TITLE, DESCRIPTION
 from ..database import db
 from ..utils import cache
 from aiohttp import ClientSession

@@ -1,12 +1,16 @@
+from . import API_BASE
+from aiohttp import ClientSession
 from asyncio import create_task, sleep
 from dataclasses import dataclass
 from http import HTTPStatus
-from time import time
 from sanic.request import Request
 from sanic.response import HTTPResponse
+from time import time
 
+
+# Time in seconds
 CACHE_TIMEOUT = 10 * 60
-ERROR_CACHED_TIMEOUT = 1 * 60
+ERROR_CACHED_TIMEOUT = 30
 
 
 @dataclass(slots=True)
@@ -53,3 +57,14 @@ def cache(func):
         return cache.response
 
     return wrapper
+
+
+async def tabnews_user_exists(user: str) -> bool:
+    session = ClientSession()
+    response = await session.get(
+        url=f'{API_BASE}/contents/{user}',
+        params={'per_page': 1}
+    )
+    await session.close()
+    del session
+    return response.status == HTTPStatus.OK
