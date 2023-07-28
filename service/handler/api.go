@@ -1,10 +1,12 @@
 package handler
 
 import (
-	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"tabrss/service"
 	"tabrss/service/database"
+
+	"github.com/gin-gonic/gin"
 )
 
 func AddUser(c *gin.Context, db database.Database) {
@@ -16,15 +18,16 @@ func AddUser(c *gin.Context, db database.Database) {
 		)
 		return
 	}
-	exists, err := service.TabnewsUserExists(user)
+	userExists, err := service.TabnewsUserExists(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to check if user exists"})
 		return
-	} else if !exists {
+	} else if !userExists {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user not exists"})
 		return
 	}
-	if ok := db.AddUser(database.User{Name: user, Exists: true}); ok {
+	userWasAdded := db.AddUser(database.User{Name: user, Exists: true})
+	if userWasAdded {
 		c.JSON(http.StatusOK, gin.H{"message": "user added"})
 		return
 	}
@@ -34,6 +37,7 @@ func AddUser(c *gin.Context, db database.Database) {
 func GetUsers(c *gin.Context, db database.Database) {
 	users, err := db.GetUsers()
 	if err != nil {
+		log.Printf("Failed to get users: %s\n", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get users"})
 		return
 	}
