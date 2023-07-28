@@ -38,15 +38,15 @@ func GetPostsFromUsers(users []database.User) [][]Post {
 	allPosts := make([][]Post, 0, len(users))
 	postsReceiver := make(chan []Post)
 	for i := range users {
-		go func(user string) {
+		go func(userIndex int, user string) {
 			posts, err := GetUserPosts(user)
 			if err != nil {
-				log.Println("Failed to get user: " + err.Error())
+				log.Printf("Failed to get user '%s' posts: %s\n", users[userIndex].Name, err.Error())
 				postsReceiver <- []Post{}
 				return
 			}
 			postsReceiver <- posts
-		}(users[i].Name)
+		}(i, users[i].Name)
 	}
 	for len(allPosts) != len(users) {
 		allPosts = append(allPosts, <-postsReceiver)

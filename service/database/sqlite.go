@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -14,14 +15,12 @@ func (s *SQLITEDatabase) execute(q string, args ...interface{}) error {
 	if err != nil {
 		return err
 	}
-	stmt, _ := tx.Prepare(q)
-	defer stmt.Close()
-	_, err = stmt.Exec(args...)
+	defer tx.Commit()
+	_, err = tx.Exec(q, args...)
 	if err != nil {
 		return err
 	}
-	tx.Commit()
-	return err
+	return nil
 }
 
 func (s *SQLITEDatabase) Open(f string) error {
@@ -30,6 +29,7 @@ func (s *SQLITEDatabase) Open(f string) error {
 		return err
 	}
 	s.db = database
+	s.db.SetMaxOpenConns(1)
 	return s.Initialize()
 }
 
@@ -46,6 +46,7 @@ func (s *SQLITEDatabase) GetUsers() ([]User, error) {
 	if err != nil {
 		return []User{}, err
 	}
+	defer rows.Close()
 	var users []User
 	for rows.Next() {
 		var name string
