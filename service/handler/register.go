@@ -17,5 +17,6 @@ func addDatabaseParameter(handler ServiceHandler, db database.Database) gin.Hand
 func AddHandlers(s *gin.Engine, db database.Database) {
 	s.GET("/api/user", addDatabaseParameter(GetUsers, db))
 	s.POST("/api/user", addDatabaseParameter(AddUser, db))
+	s.DELETE("/api/user", addDatabaseParameter(RemoveUser, db))
 	s.GET("/rss", addDatabaseParameter(FeedHandler, db))
 }
