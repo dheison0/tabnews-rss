@@ -20,24 +20,32 @@ main {
 }
 
 .title {
+    font-size: 1.7rem;
     margin-top: 2rem;
+    text-align: center;
 }
 
 .input-box {
+    display: flex;
+    width: 80%;
+    height: 2.5rem;
+    justify-content: center;
     margin: 1rem;
 }
 
 .input-box input {
-    border: 3px solid #44475a;
+    border: 2px solid #44475a;
     border-radius: 3px;
     background-color: var(--background);
     padding: 6px;
-    width: 16rem;
+    width: 75%;
+    max-width: 18rem;
+    margin-right: 0.5rem;
 }
 
 .input-box button {
-    padding: 8px;
-    border-radius: 4px;
+    padding: 0.5rem;
+    border-radius: 0.4rem;
     background-color: #44475a;
 }
 
@@ -56,17 +64,22 @@ main {
     text-justify: center;
 }
 
+
+.users {
+    width: 90%;
+    max-width: 25rem;
+    flex-direction: column;
+}
+
 .registered {
     display: flex;
     flex-direction: column;
-    width: 22rem;
     margin: 1rem;
     justify-content: center;
 }
 
 .user {
     display: flex;
-    width: 18rem;
     margin: 0.5rem;
     background-color: #44475a;
     padding: 1rem;
