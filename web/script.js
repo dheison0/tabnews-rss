@@ -1,7 +1,6 @@
 const usernameInput = document.querySelector("#user")
 const userAddButton = document.querySelector("#submit")
-const registeredUsers = document.querySelector(".registered")
-
+const registeredUsers = document.querySelector(".registered-users")
 const loadingAnimation = registeredUsers.innerHTML.toString()
 
 function generateURL(path, params) {
@@ -13,35 +12,40 @@ function generateURL(path, params) {
 }
 
 function elementWaitToggle(e) {
-  if (e.disabled) {
-    e.style.cursor = "default"
-    e.disabled = false
-  } else {
-    e.style.cursor = "wait"
-    e.disabled = true
-  }
+  e.disabled = !e.disabled
+  e.style.cursor = e.disabled ? "wait" : "default"
 }
 
 async function addRemoveUserEventListener() {
-  const buttons = document.querySelectorAll(".delete")
+  const buttons = document.querySelectorAll(".delete-user")
   buttons.forEach((e) => e.addEventListener('click', removeUser))
 }
 
 async function loadAddedUsers() {
   registeredUsers.innerHTML = loadingAnimation
   const response = await fetch("/api/user")
-  const data = await response.json()
+  let data
+  try {
+    data = await response.json()
+  } catch (err) {
+    registeredUsers.innerHTML = `
+      <div class="center error-box">
+        <h4>Não foi possível carregar a lista de usuários!</h4>
+        <button class="button" onclick="loadAddedUsers()">Tentar novamente</button>
+      </div>
+    `
+    return
+  }
   if (!data.users) {
     registeredUsers.innerHTML = "<p>Não existe nenhum usuário registrado!</p>"
     return
   }
   const items = data.users.map((user) => `
-        <div class="user">
-            <p>${user.name}</p>
-            <button class="delete" data-user="${user.name}">Remover</button>
-        </div>
-    `
-  )
+    <div class="user">
+      <p>${user.name}</p>
+      <button class="button delete-user" data-user="${user.name}">Remover</button>
+    </div>
+  `)
   registeredUsers.innerHTML = items.join("\n")
   addRemoveUserEventListener()
 }

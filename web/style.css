@@ -1,22 +1,30 @@
 :root {
+    --background: #282a36;
+    --button-background: #44475a;
+    --text: #f8f8f2;
+    background-color: var(--background);
     display: flex;
     flex-direction: column;
-    --text: #f8f8f2;
-    --background: #282a36;
-    background-color: var(--background);
 }
 
 * {
     border: 0;
+    color: var(--text);
     margin: 0;
     padding: 0;
-    color: var(--text);
 }
 
-main {
+.center {
+    align-items: center;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: center;
+}
+
+.button {
+    background-color: var(--button-background);
+    border-radius: 0.4rem;
+    padding: 0.5rem;
 }
 
 .title {
@@ -27,32 +35,20 @@ main {
 
 .input-box {
     display: flex;
-    width: 80%;
     height: 2.5rem;
     justify-content: center;
     margin: 1rem;
+    width: 80%;
 }
 
 .input-box input {
-    border: 2px solid #44475a;
-    border-radius: 3px;
     background-color: var(--background);
+    border-radius: 3px;
+    border: 2px solid #44475a;
+    margin-right: 0.5rem;
+    max-width: 18rem;
     padding: 6px;
     width: 75%;
-    max-width: 18rem;
-    margin-right: 0.5rem;
-}
-
-.input-box button {
-    padding: 0.5rem;
-    border-radius: 0.4rem;
-    background-color: #44475a;
-}
-
-.loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .loading img {
@@ -64,32 +60,42 @@ main {
     text-justify: center;
 }
 
-
-.users {
-    width: 90%;
-    max-width: 25rem;
+.users-container {
     flex-direction: column;
+    max-width: 25rem;
+    width: 90%;
 }
 
-.registered {
-    display: flex;
-    flex-direction: column;
+.registered-users {
     margin: 1rem;
-    justify-content: center;
 }
 
 .user {
-    display: flex;
-    margin: 0.5rem;
-    background-color: #44475a;
-    padding: 1rem;
-    border-radius: 6px;
-    justify-content: space-between;
     align-items: center;
+    background-color: #44475a;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0.5rem;
+    padding: 1rem;
+    width: 80%;
 }
 
-.user button {
+.user .button {
     background-color: #6272a4;
-    padding: 8px;
-    border-radius: 6px;
+}
+
+.error-box {
+    background-color: #ff5555;
+    border-radius: 1rem;
+    display: flex;
+    margin-top: 2rem;
+    padding: 2rem;
+    width: 75%;
+}
+
+.error-box h4 {
+    color: #dff;
+    margin-bottom: 1.5rem;
+    text-align: center;
 }
