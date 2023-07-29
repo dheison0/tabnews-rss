@@ -2,82 +2,90 @@ const usernameInput = document.querySelector("#user")
 const userAddButton = document.querySelector("#submit")
 const registeredUsers = document.querySelector(".registered")
 
-const loadingAnimation = toString(registeredUsers.innerHTML)
+const loadingAnimation = registeredUsers.innerHTML.toString()
 
-userAddButton.onclick = async () => {
-    const username = usernameInput.value.trim()
-    if (username == "") {
-        alert("Você não me disse que usuário eu devo adicionar!")
-        return
-    }
-    userAddButton.style.cursor = "wait"
-    userAddButton.disabled = true
-    const url = new URL(window.location + "api/user")
-    url.searchParams.append("user", username)
-    let response, data;
-    try {
-        response = await fetch(url.toString(), { method: "POST" })
-        data = await response.json()
-    } catch (err) {
-        alert("Error on request: " + toString(err))
-    }
-    if (response.status == 200) {
-        loadAddedUsers()
-        usernameInput.value = ""
-    } else if (data) {
-        alert("Falha ao adicionar usuário: " + (data?.error || response.statusText))
-    }
-    userAddButton.style.cursor = "default"
-    userAddButton.disabled = false
+function generateURL(path, params) {
+  const url = new URL(window.location + path)
+  for (let key in params) {
+    url.searchParams.append(key, params[key])
+  }
+  return url.toString()
 }
 
-const loadAddedUsers = async () => {
-    registeredUsers.innerHTML = loadingAnimation
-    const response = await fetch("/api/user")
-    const data = await response.json()
-    if (!data.users) {
-        registeredUsers.innerHTML = "<p>Não existe nenhum usuário registrado!</p>"
-        return
-    }
-    let html = ""
-    data.users.map((user) => {
-        html += `
-            <div class="user">
-                <p>${user.name}</p>
-                <button class="delete" data-user="${user.name}">Remover</button>
-            </div>
-        `
-    })
-    registeredUsers.innerHTML = html
-    addRemoveUserEventListener()
+function elementWaitToggle(e) {
+  if (e.disabled) {
+    e.style.cursor = "default"
+    e.disabled = false
+  } else {
+    e.style.cursor = "wait"
+    e.disabled = true
+  }
 }
-
 
 async function addRemoveUserEventListener() {
-    const buttons = document.querySelectorAll(".delete")
-    buttons.forEach((e) => e.addEventListener('click', removeUser))
+  const buttons = document.querySelectorAll(".delete")
+  buttons.forEach((e) => e.addEventListener('click', removeUser))
 }
 
+async function loadAddedUsers() {
+  registeredUsers.innerHTML = loadingAnimation
+  const response = await fetch("/api/user")
+  const data = await response.json()
+  if (!data.users) {
+    registeredUsers.innerHTML = "<p>Não existe nenhum usuário registrado!</p>"
+    return
+  }
+  const items = data.users.map((user) => `
+        <div class="user">
+            <p>${user.name}</p>
+            <button class="delete" data-user="${user.name}">Remover</button>
+        </div>
+    `
+  )
+  registeredUsers.innerHTML = items.join("\n")
+  addRemoveUserEventListener()
+}
 
 async function removeUser() {
-    const user = this.getAttribute('data-user')
-    this.style.cursor = 'wait'
-    this.disabled = true
-    const url = new URL(window.location + 'api/user')
-    url.searchParams.append('user', user)
-    let response
-    try {
-        response = await fetch(url.toString(), { method: 'DELETE' })
-    } catch (err) {
-        alert("Fallha ao pedir servidor para remover usuário: " + err.toString())
-        return
-    }
-    if (response.status == 200) {
-        loadAddedUsers()
-        return
-    }
-    const data = await response.json()
-    alert("Falha ao remover usuário: " + data.error)
+  const user = this.getAttribute('data-user')
+  elementWaitToggle(this)
+  const url = generateURL('api/user', { user })
+  let response
+  try {
+    response = await fetch(url, { method: 'DELETE' })
+  } catch (err) {
+    elementWaitToggle(this)
+    return alert("Fallha ao pedir servidor para remover usuário: " + err.toString())
+  }
+  if (response.status == 200) {
+    return loadAddedUsers()
+  }
+  const data = await response.json()
+  alert("Falha ao remover usuário: " + data.error)
+  elementWaitToggle(this)
+}
+
+userAddButton.onclick = async () => {
+  const username = usernameInput.value.trim()
+  if (username == "") {
+    return alert("Você não me disse que usuário eu devo adicionar!")
+  }
+  elementWaitToggle(userAddButton)
+  const url = generateURL("api/user", { user: username })
+  let response, data;
+  try {
+    response = await fetch(url, { method: "POST" })
+    data = await response.json()
+  } catch (err) {
+    alert("Error on request: " + toString(err))
+  }
+  if (response.status == 200) {
+    loadAddedUsers()
+    usernameInput.value = ""
+  } else if (data) {
+    alert("Falha ao adicionar usuário: " + (data?.error || response.statusText))
+  }
+  elementWaitToggle(userAddButton)
 }
 
 loadAddedUsers()
