@@ -38,13 +38,10 @@ func GenerateFeed(db database.Database) feeds.Feed {
 func TurnPostIntoFeedItem(post Post) *feeds.Item {
 	return &feeds.Item{
 		Title:   post.Title,
+		Author:  &feeds.Author{Name: post.Owner},
 		Created: post.CreatedAt,
 		Link: &feeds.Link{
 			Href: fmt.Sprintf("%s/%s/%s", service.SITE, post.Owner, post.Slug),
-		},
-		Enclosure: &feeds.Enclosure{
-			Url:  fmt.Sprintf("%s/contents/%s/%s/thumbnail", service.API_BASE, post.Owner, post.Slug),
-			Type: "image/png",
 		},
 	}
 }
