@@ -42,7 +42,7 @@ async function loadAddedUsers() {
   }
   const items = data.users.map((user) => `
     <div class="user">
-      <p>${user.name}</p>
+      <p class="${user.exists ? '' : 'not-exists'}">${user.name}</p>
       <button class="button delete-user" data-user="${user.name}">Remover</button>
     </div>
   `)

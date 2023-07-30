@@ -1,7 +1,8 @@
 :root {
     --background: #282a36;
-    --button-background: #44475a;
+    --button-background: #565a72;
     --text: #f8f8f2;
+    --disabled-button: #4a4a4a;
     background-color: var(--background);
     display: flex;
     flex-direction: column;
@@ -25,6 +26,10 @@
     background-color: var(--button-background);
     border-radius: 0.4rem;
     padding: 0.5rem;
+}
+
+.button:disabled {
+    background-color: var(--disabled-button);
 }
 
 .title {
@@ -98,4 +103,8 @@
     color: #dff;
     margin-bottom: 1.5rem;
     text-align: center;
+}
+
+.user .not-exists {
+    color: #ff5555;
 }
