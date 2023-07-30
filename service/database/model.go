@@ -6,9 +6,10 @@ type User struct {
 }
 
 type Database interface {
-	Open(string) error
+	AddUser(User) bool
 	Close()
 	GetUsers() ([]User, error)
-	AddUser(User) bool
+	Open(string) error
 	RemoveUser(User) error
+	SetUserExists(User, bool) error
 }

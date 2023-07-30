@@ -2,6 +2,7 @@ package feed
 
 import (
 	"fmt"
+	"log"
 	"tabrss/service"
 	"tabrss/service/database"
 	"time"
@@ -18,10 +19,12 @@ func GenerateFeed(db database.Database) feeds.Feed {
 	}
 	users, err := db.GetUsers()
 	if err != nil {
+		log.Printf("Failed to get users from database: %s\n", err.Error())
 		return feed
 	}
 	var items []*feeds.Item
-	posts := GetPostsFromUsers(users)
+	posts, usersNotFound := GetPostsFromUsers(users)
+	go SetUsersNotExistsAnymore(db, usersNotFound)
 	for byUser := range posts {
 		for i := range posts[byUser] {
 			post := posts[byUser][i]
@@ -43,5 +46,13 @@ func TurnPostIntoFeedItem(post Post) *feeds.Item {
 		Link: &feeds.Link{
 			Href: fmt.Sprintf("%s/%s/%s", service.SITE, post.Owner, post.Slug),
 		},
+	}
+}
+
+func SetUsersNotExistsAnymore(db database.Database, users []string) {
+	for _, user := range users {
+		if err := db.SetUserExists(database.User{Name: user}, false); err != nil {
+			log.Printf("Failed to remove user '%s': %s\n", user, err.Error())
+		}
 	}
 }

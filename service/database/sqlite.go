@@ -73,3 +73,7 @@ func (s *SQLITEDatabase) AddUser(user User) bool {
 func (s *SQLITEDatabase) RemoveUser(user User) error {
 	return s.execute(`DELETE FROM users WHERE name=?;`, user.Name)
 }
+
+func (s *SQLITEDatabase) SetUserExists(user User, exists bool) error {
+	return s.execute(`UPDATE users SET status=? WHERE name=?;`, exists, user.Name)
+}
