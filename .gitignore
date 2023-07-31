@@ -1,2 +1,6 @@
+# Local database and binary for test
 /tabrss
 /tablocal.db*
+
+# Path with data for frontend development using live server
+/api
