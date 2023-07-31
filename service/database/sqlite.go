@@ -10,17 +10,14 @@ type SQLITEDatabase struct {
 	db *sql.DB
 }
 
-func (s *SQLITEDatabase) execute(q string, args ...interface{}) error {
+func (s *SQLITEDatabase) execute(q string, args ...any) error {
 	tx, err := s.db.Begin()
 	if err != nil {
 		return err
 	}
 	defer tx.Commit()
 	_, err = tx.Exec(q, args...)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (s *SQLITEDatabase) Open(f string) error {
@@ -29,44 +26,37 @@ func (s *SQLITEDatabase) Open(f string) error {
 		return err
 	}
 	s.db = database
-	s.db.SetMaxOpenConns(1)
-	return s.Initialize()
+	return s.Setup()
 }
 
 func (s *SQLITEDatabase) Close() {
 	s.db.Close()
 }
 
-func (s *SQLITEDatabase) Initialize() error {
+func (s *SQLITEDatabase) Setup() error {
+	s.db.SetMaxOpenConns(1)
 	return s.execute("CREATE TABLE IF NOT EXISTS users(name TEXT UNIQUE, status TEXT);")
 }
 
 func (s *SQLITEDatabase) GetUsers() ([]User, error) {
+	var users []User
 	rows, err := s.db.Query("SELECT * FROM users;")
 	if err != nil {
-		return []User{}, err
+		return users, err
 	}
 	defer rows.Close()
-	var users []User
 	for rows.Next() {
-		var name string
-		var exists int
-		if err := rows.Scan(&name, &exists); err != nil {
+		user := User{}
+		if err := rows.Scan(&user.Name, &user.Exists); err != nil {
 			continue
 		}
-		users = append(users, User{name, exists == 1})
+		users = append(users, user)
 	}
 	return users, nil
 }
 
 func (s *SQLITEDatabase) AddUser(user User) bool {
-	var userExists int
-	if user.Exists {
-		userExists = 1
-	} else {
-		userExists = 0
-	}
-	err := s.execute(`INSERT INTO users VALUES (?, ?);`, user.Name, userExists)
+	err := s.execute(`INSERT INTO users VALUES (?, ?);`, user.Name, user.Exists)
 	return err == nil
 }
 
